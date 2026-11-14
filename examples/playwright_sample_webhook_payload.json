@@ -1,0 +1,25 @@
+{
+  "projectId": "proj_medicare_telehealth",
+  "suiteName": "Playwright Telehealth E2E Regression",
+  "environment": "QA Integration",
+  "buildVersion": "v2.4.1-rc1",
+  "executedBy": "GitHub Actions CI Runner",
+  "results": [
+    {
+      "testCaseId": "TC-MED-001",
+      "status": "Passed",
+      "actualResult": "Appointment slot selected and locked successfully in 240ms.",
+      "durationMs": 1250,
+      "locatorUsed": "button[data-testid='confirm-slot-booking']"
+    },
+    {
+      "testCaseId": "TC-MED-002",
+      "status": "Failed",
+      "actualResult": "504 Gateway Timeout during WebRTC peer negotiation on Safari iOS 17.",
+      "durationMs": 15200,
+      "errorStack": "TimeoutError: locator.waitFor({ state: 'visible' }) exceeded 15000ms\n  at ConsultationRoom.join (tests/webrtc.spec.ts:42:15)\n  at async TestRunner.execute (tests/runner.ts:88:9)",
+      "screenshotUrl": "https://ci-artifacts.example.com/screenshots/medicare-tc002-fail.png",
+      "locatorUsed": "button#start-video-consultation"
+    }
+  ]
+}

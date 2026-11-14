@@ -1,0 +1,77 @@
+{
+  "project": {
+    "id": "proj_apexpay_remittance",
+    "name": "ApexPay Cross-Border Remittance & Wire Transfers",
+    "domain": "FinTech & Banking"
+  },
+  "exportedAt": "2026-11-13T15:30:00.000Z",
+  "totalCount": 3,
+  "testCases": [
+    {
+      "id": "TC-APE-001",
+      "title": "Verify FX Quote 120s Guaranteed Rate Lock",
+      "feature": "Foreign Exchange Rate Lock",
+      "reqRefs": ["REQ-FT-01"],
+      "storyRefs": ["US-APE-01"],
+      "acRefs": ["AC-US-APE-01.1"],
+      "preconditions": "Sender logged in with positive USD wallet balance",
+      "testData": "Source: USD, Target: EUR, Amount: 5000",
+      "steps": [
+        { "stepNumber": 1, "action": "Request USD to EUR rate", "expectedStepResult": "Quote generated with timer" },
+        { "stepNumber": 2, "action": "Wait 60s and verify rate invariance", "expectedStepResult": "Rate locked exactly" }
+      ],
+      "expectedResult": "Rate remains constant until countdown timer hits 0s.",
+      "testType": "Positive",
+      "priority": "Critical",
+      "reviewStatus": "Approved",
+      "version": 1,
+      "mondayItemId": "802030400",
+      "mondayLink": "https://monday.com/boards/4017071689/pulses/802030400",
+      "updatedAt": "2026-11-11T10:00:00.000Z"
+    },
+    {
+      "id": "TC-APE-002",
+      "title": "Verify Mandatory 2FA for Wire Transfers Exceeding $1,000 USD",
+      "feature": "Wire Transfer Authorization",
+      "reqRefs": ["REQ-FT-02"],
+      "storyRefs": ["US-APE-02"],
+      "acRefs": ["AC-US-APE-02.3"],
+      "preconditions": "User authenticated with 2FA registered device",
+      "testData": "Transfer Amount: $2,500 USD",
+      "steps": [
+        { "stepNumber": 1, "action": "Submit $2,500 transfer", "expectedStepResult": "2FA TOTP prompt displayed" },
+        { "stepNumber": 2, "action": "Enter OTP 123456", "expectedStepResult": "Debit processed successfully" }
+      ],
+      "expectedResult": "Transactions above $1,000 USD require 2FA challenge before funds debit.",
+      "testType": "Security",
+      "priority": "Critical",
+      "reviewStatus": "Approved",
+      "version": 1,
+      "mondayItemId": "802030401",
+      "mondayLink": "https://monday.com/boards/4017071689/pulses/802030401",
+      "updatedAt": "2026-11-11T10:00:00.000Z"
+    },
+    {
+      "id": "TC-APE-003",
+      "title": "Verify AML OFAC Sanctioned Entity Immediate Suspension",
+      "feature": "AML & Sanctions Screening",
+      "reqRefs": ["REQ-FT-03"],
+      "storyRefs": ["US-APE-03"],
+      "acRefs": ["AC-US-APE-03.2"],
+      "preconditions": "Sender submits payment to flagged beneficiary name",
+      "testData": "Beneficiary on OFAC SDN list",
+      "steps": [
+        { "stepNumber": 1, "action": "Submit transfer to flagged beneficiary", "expectedStepResult": "AML rule matches >85% confidence" },
+        { "stepNumber": 2, "action": "Check transaction state", "expectedStepResult": "Status is 'Held - Compliance Review'" }
+      ],
+      "expectedResult": "Transfer is blocked and held for manual compliance triage without debit.",
+      "testType": "Negative",
+      "priority": "Critical",
+      "reviewStatus": "Approved",
+      "version": 1,
+      "mondayItemId": "802030402",
+      "mondayLink": "https://monday.com/boards/4017071689/pulses/802030402",
+      "updatedAt": "2026-11-11T10:00:00.000Z"
+    }
+  ]
+}

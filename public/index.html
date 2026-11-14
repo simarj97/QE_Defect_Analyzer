@@ -1,0 +1,1388 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DefectLens · Defect & Test Scenario Analyzer</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: #f7f9fc;
+        color: #233047;
+        font: 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      }
+
+      header {
+        background: #182137;
+        color: #fff;
+        padding: 18px 4%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      }
+
+      .logo {
+        font-size: 22px;
+        font-weight: 750;
+        letter-spacing: -0.5px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .logo span {
+        color: #afa6ff;
+      }
+
+      main {
+        max-width: 1550px;
+        margin: auto;
+        padding: 26px 20px;
+      }
+
+      h1 {
+        font-size: 28px;
+        letter-spacing: -0.7px;
+        margin: 0 0 6px;
+        color: #172033;
+      }
+
+      h2 {
+        font-size: 18px;
+        margin: 0;
+        color: #1f2b45;
+      }
+
+      p {
+        color: #68758d;
+        line-height: 1.5;
+        margin: 0;
+      }
+
+      button,
+      input,
+      select,
+      textarea {
+        font: inherit;
+      }
+
+      button {
+        border: 1px solid #dce0eb;
+        border-radius: 8px;
+        background: white;
+        padding: 9px 15px;
+        cursor: pointer;
+        color: #33405a;
+        font-weight: 500;
+        transition: all 0.15s ease;
+      }
+
+      button:hover {
+        background: #f2efff;
+        border-color: #c8c0ff;
+        color: #5544be;
+      }
+
+      button:disabled {
+        opacity: 0.55;
+        cursor: wait;
+      }
+
+      .primary {
+        background: #5544be;
+        color: white;
+        border: 0;
+      }
+
+      .primary:hover {
+        background: #4434a6;
+        color: white;
+      }
+
+      .heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+
+      .buttons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      /* Charts & Analytics Dashboard Section */
+      .analytics-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 1.2fr 0.9fr;
+        gap: 18px;
+        margin: 20px 0 24px;
+      }
+
+      .chart-card {
+        background: white;
+        padding: 20px 22px;
+        border: 1px solid #e2e7f2;
+        border-radius: 12px;
+        box-shadow: 0 2px 6px rgba(24, 33, 55, 0.03);
+      }
+
+      .chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+      }
+
+      .chart-title {
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        color: #6b778c;
+      }
+
+      .chart-badge {
+        font-size: 12px;
+        font-weight: 700;
+        color: #5544be;
+        background: #f0efff;
+        padding: 3px 8px;
+        border-radius: 12px;
+      }
+
+      /* Progress Bar Breakdown */
+      .stacked-bar {
+        height: 14px;
+        border-radius: 7px;
+        background: #edf0f7;
+        display: flex;
+        overflow: hidden;
+        margin: 12px 0 16px;
+      }
+
+      .bar-segment {
+        height: 100%;
+        transition: width 0.3s ease;
+      }
+
+      .bg-critical {
+        background: #292f3b;
+      }
+
+      .bg-high {
+        background: #e2445c;
+      }
+
+      .bg-medium {
+        background: #579bfc;
+      }
+
+      .bg-low {
+        background: #a25ddc;
+      }
+
+      .bg-done {
+        background: #00ca72;
+      }
+
+      .bg-working {
+        background: #fdab3d;
+      }
+
+      .bg-pending {
+        background: #c4c4c4;
+      }
+
+      .metrics-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .metric-pill {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 12px;
+        color: #4a5568;
+      }
+
+      .metric-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+
+      .metric-val {
+        font-weight: 700;
+        color: #172033;
+      }
+
+      .stats-summary {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .mini-stat {
+        background: #f8fafd;
+        padding: 12px 14px;
+        border-radius: 8px;
+        border: 1px solid #edf1f8;
+      }
+
+      .mini-stat span {
+        display: block;
+        font-size: 11px;
+        color: #7a869a;
+        margin-bottom: 4px;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .mini-stat b {
+        font-size: 22px;
+        color: #182238;
+      }
+
+      .notice {
+        background: #eeebff;
+        color: #5544be;
+        border-radius: 9px;
+        padding: 12px 16px;
+        font-size: 13px;
+        line-height: 1.6;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .error {
+        background: #fff0ed;
+        color: #9d473e;
+      }
+
+      /* Table & Toolbar */
+      .panel {
+        background: white;
+        padding: 22px;
+        border: 1px solid #e1e5ef;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(24, 33, 55, 0.04);
+      }
+
+      .toolbar {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 18px 0;
+        flex-wrap: wrap;
+      }
+
+      input,
+      textarea,
+      select {
+        padding: 9px 12px;
+        border: 1px solid #dce1eb;
+        border-radius: 7px;
+        color: #34405a;
+        background: white;
+      }
+
+      input[type="search"] {
+        flex: 1;
+        min-width: 180px;
+      }
+
+      .tablewrap {
+        overflow-x: auto;
+        border: 1px solid #edf0f6;
+        border-radius: 8px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        min-width: 1200px;
+      }
+
+      th {
+        font-size: 11px;
+        color: #6c788e;
+        letter-spacing: 0.5px;
+        background: #f7f9fd;
+        padding: 14px 12px;
+        border-bottom: 2px solid #e5eaf2;
+        white-space: nowrap;
+      }
+
+      th.sortable {
+        cursor: pointer;
+        user-select: none;
+        transition: background 0.15s, color 0.15s;
+      }
+
+      th.sortable:hover {
+        background: #edf1fa;
+        color: #2b3850;
+      }
+
+      th .sort-icon {
+        display: inline-block;
+        margin-left: 4px;
+        font-size: 11px;
+        opacity: 0.5;
+      }
+
+      th.active-sort {
+        color: #5544be;
+        background: #f0efff;
+      }
+
+      th.active-sort .sort-icon {
+        opacity: 1;
+        color: #5544be;
+        font-weight: bold;
+      }
+
+      td {
+        padding: 13px 12px;
+        border-bottom: 1px solid #edf0f6;
+        font-size: 12px;
+        vertical-align: middle;
+      }
+
+      tr:hover td {
+        background: #fafbfe;
+      }
+
+      /* Monday Badges */
+      .badge-priority {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        padding: 5px 12px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 600;
+        color: white;
+        min-width: 95px;
+        text-align: center;
+      }
+
+      .badge-critical {
+        background: #333333;
+        color: #ffffff;
+      }
+
+      .badge-high {
+        background: #e2445c;
+        color: #ffffff;
+      }
+
+      .badge-medium {
+        background: #579bfc;
+        color: #ffffff;
+      }
+
+      .badge-low {
+        background: #a25ddc;
+        color: #ffffff;
+      }
+
+      .badge-status {
+        display: inline-block;
+        padding: 5px 12px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 600;
+        color: white;
+        min-width: 95px;
+        text-align: center;
+      }
+
+      .status-working {
+        background: #fdab3d;
+      }
+
+      .status-done {
+        background: #00ca72;
+      }
+
+      .status-empty {
+        background: #c4c4c4;
+      }
+
+      .avatar-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 12px;
+        color: #3b4559;
+      }
+
+      .avatar-circle {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: #0073ea;
+        color: white;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .code-pill {
+        display: inline-block;
+        font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+        font-size: 11px;
+        font-weight: 600;
+        color: #2d3748;
+        background: #edf0f7;
+        padding: 4px 8px;
+        border-radius: 4px;
+        white-space: nowrap;
+      }
+
+      .desc-text {
+        max-width: 260px;
+        line-height: 1.45;
+        color: #4a5568;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .empty {
+        padding: 40px;
+        text-align: center;
+        color: #718096;
+      }
+
+      /* Dialogs */
+      dialog {
+        border: 0;
+        border-radius: 14px;
+        max-width: 720px;
+        width: 92%;
+        padding: 28px;
+        box-shadow: 0 20px 70px rgba(24, 33, 55, 0.35);
+      }
+
+      dialog::backdrop {
+        background: rgba(24, 33, 55, 0.5);
+      }
+
+      label {
+        display: block;
+        font-size: 12px;
+        font-weight: 600;
+        color: #4a5568;
+        margin: 14px 0 6px;
+      }
+
+      form input,
+      form textarea,
+      form select {
+        width: 100%;
+      }
+
+      textarea {
+        min-height: 65px;
+      }
+
+      .row {
+        display: flex;
+        gap: 14px;
+      }
+
+      .row > * {
+        flex: 1;
+      }
+
+      .actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        margin-top: 22px;
+      }
+
+      pre {
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        font: 13px/1.8 ui-monospace, SFMono-Regular, monospace;
+        background: #f7f9fc;
+        padding: 18px;
+        border-radius: 9px;
+        border: 1px solid #e2e8f0;
+      }
+
+      .toast {
+        position: fixed;
+        bottom: 25px;
+        right: 25px;
+        background: #182137;
+        color: white;
+        padding: 14px 20px;
+        border-radius: 8px;
+        max-width: 90%;
+        z-index: 100;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+        font-size: 13px;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      footer {
+        font-size: 12px;
+        color: #8a94a6;
+        margin-top: 24px;
+        text-align: center;
+      }
+
+      @media (max-width: 950px) {
+        .analytics-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .heading {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo">◈ Defect<span>Lens</span></div>
+      <div class="buttons">
+        <button id="syncButton" class="primary">⇄ Sync monday.com</button>
+        <span id="lastChecked" style="font-size:12px;color:#718096;"></span>
+        <button id="exportButton">↓ Export Excel</button>
+      </div>
+    </header>
+
+    <main>
+      <div class="heading">
+        <div>
+          <h1>Defect & Test Scenario Analyzer</h1>
+          <p>Real-time synced queue from monday.com board with automated completeness & duplicate analysis.</p>
+        </div>
+      </div>
+
+      <div id="connection" class="notice" role="status">Loading workspace…</div>
+
+      <!-- Charts & Visual Analytics Section -->
+      <section class="analytics-grid">
+        <!-- Priority Breakdown Card -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <span class="chart-title">Priority & Risk Breakdown</span>
+            <span id="prioritySummaryBadge" class="chart-badge">100% Active</span>
+          </div>
+          <div id="priorityStackedBar" class="stacked-bar"></div>
+          <div id="priorityMetrics" class="metrics-row"></div>
+        </div>
+
+        <!-- Status & Execution Breakdown Card -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <span class="chart-title">Execution & Resolution Status</span>
+            <span id="statusSummaryBadge" class="chart-badge">Progress</span>
+          </div>
+          <div id="statusStackedBar" class="stacked-bar"></div>
+          <div id="statusMetrics" class="metrics-row"></div>
+        </div>
+
+        <!-- Summary & Quality Card -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <span class="chart-title">Defect Metrics</span>
+            <span id="qualityBadge" class="chart-badge">Quality</span>
+          </div>
+          <div id="statsSummary" class="stats-summary"></div>
+        </div>
+      </section>
+
+      <!-- Main Table Section -->
+      <section class="panel">
+        <div class="heading">
+          <h2>Defect Queue</h2>
+          <button id="analyzeAll" class="primary">✧ Analyze all</button>
+        </div>
+
+        <div class="toolbar">
+          <input
+            id="search"
+            type="search"
+            placeholder="Search test case ID, scenario ID, defect title or assignee..."
+            aria-label="Search records"
+          >
+          <select id="severity" aria-label="Priority">
+            <option value="">All Priorities</option>
+            <option value="Critical">Critical</option>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+          </select>
+          <select id="statusFilter" aria-label="Status">
+            <option value="">All Statuses</option>
+            <option value="Working on it">Working on it</option>
+            <option value="Done">Done</option>
+            <option value="Open">Open / Unassigned</option>
+          </select>
+          <select id="sortBy" aria-label="Sort by">
+            <option value="priority-desc">Sort: Priority (Critical → Low)</option>
+            <option value="priority-asc">Sort: Priority (Low → Critical)</option>
+            <option value="testCase-asc">Sort: Test Case ID (A → Z)</option>
+            <option value="testCase-desc">Sort: Test Case ID (Z → A)</option>
+            <option value="scenarioId-asc">Sort: Scenario ID (A → Z)</option>
+            <option value="defectId-asc">Sort: Defect Title (A → Z)</option>
+          </select>
+        </div>
+
+        <div class="tablewrap">
+          <table>
+            <thead>
+              <tr>
+                <th class="sortable" data-sort="testCase">TEST CASE ID <span class="sort-icon">⇅</span></th>
+                <th class="sortable" data-sort="scenarioId">SCENARIO - ID <span class="sort-icon">⇅</span></th>
+                <th class="sortable" data-sort="defectId">DEFECT ID / TITLE <span class="sort-icon">⇅</span></th>
+                <th class="sortable" data-sort="testCaseTitle">TEST CASE TITLE <span class="sort-icon">⇅</span></th>
+                <th class="sortable" data-sort="priority">PRIORITY <span class="sort-icon">⇅</span></th>
+                <th>PRECONDITIONS</th>
+                <th>STEPS SUMMARY</th>
+                <th>EXPECTED RESULT</th>
+                <th class="sortable" data-sort="assignee">PERSON <span class="sort-icon">⇅</span></th>
+                <th class="sortable" data-sort="status">STATUS <span class="sort-icon">⇅</span></th>
+                <th>DATE</th>
+                <th>LAST UPDATED</th>
+                <th>ACTION</th>
+              </tr>
+            </thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <footer>
+        Automated rule-based analysis · Synced with monday.com board · Browser auto-refreshes every 10 seconds
+      </footer>
+    </main>
+
+    <!-- Details / Analysis Dialog -->
+    <dialog id="detailDialog">
+      <div id="details"></div>
+      <div class="actions">
+        <button id="publishButton">Publish to monday.com</button>
+        <button id="closeDetail">Close</button>
+      </div>
+    </dialog>
+
+    <div id="toast" class="toast hidden" role="status"></div>
+
+    <script>
+      const $ = (id) => document.getElementById(id);
+      let state = { defects: [] };
+      let selected = null;
+      let refreshing = false;
+      let toastTimer;
+
+      let sortField = 'priority';
+      let sortDirection = 'desc';
+
+      const PRIORITY_RANKS = {
+        critical: 4,
+        high: 3,
+        medium: 2,
+        low: 1
+      };
+
+      const esc = (s) =>
+        String(s ?? '').replace(
+          /[&<>"']/g,
+          (c) =>
+            ({
+              '&': '&amp;',
+              '<': '&lt;',
+              '>': '&gt;',
+              '"': '&quot;',
+              "'": '&#39;'
+            }[c])
+        );
+
+      function notify(s) {
+        $('toast').textContent = s;
+        $('toast').classList.remove('hidden');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => $('toast').classList.add('hidden'), 5000);
+      }
+
+      async function api(path, body) {
+        const r = await fetch(path, {
+          method: body ? 'POST' : 'GET',
+          headers: { 'Content-Type': 'application/json' },
+          body: body ? JSON.stringify(body) : undefined
+        });
+        let j;
+        try {
+          j = await r.json();
+        } catch {
+          throw Error('Server unavailable or network issue.');
+        }
+        if (!r.ok) throw Error(j.error || 'Request failed');
+        return j;
+      }
+
+      let lastSnapshot = '';
+
+      async function refresh(force) {
+        if (refreshing) return;
+        refreshing = true;
+        try {
+          const next = await api('/api/state');
+          const snap = JSON.stringify(next);
+          const changed = snap !== lastSnapshot;
+          lastSnapshot = snap;
+          state = next;
+          // Skip rebuilding the table when nothing changed on the server.
+          if (changed || force) render();
+          else updateLastChecked();
+        } catch (e) {
+          $('connection').textContent = e.message;
+          $('connection').classList.add('error');
+        } finally {
+          refreshing = false;
+        }
+      }
+
+      function sortItems(items) {
+        return [...items].sort((a, b) => {
+          let valA, valB;
+
+          if (sortField === 'priority' || sortField === 'risk' || sortField === 'severity') {
+            const pA = String(a.priority || a.risk || a.severity || 'Medium').toLowerCase();
+            const pB = String(b.priority || b.risk || b.severity || 'Medium').toLowerCase();
+            valA = PRIORITY_RANKS[pA] || 2;
+            valB = PRIORITY_RANKS[pB] || 2;
+            return sortDirection === 'asc' ? valA - valB : valB - valA;
+          }
+
+          if (sortField === 'testCase') {
+            valA = String(a.testCase || a.title || '');
+            valB = String(b.testCase || b.title || '');
+          } else if (sortField === 'scenarioId') {
+            valA = String(a.scenarioId || a.id || '');
+            valB = String(b.scenarioId || b.id || '');
+          } else if (sortField === 'defectId') {
+            valA = String(a.defectId || a.scenarioTitle || a.title || '');
+            valB = String(b.defectId || b.scenarioTitle || b.title || '');
+          } else if (sortField === 'testCaseTitle') {
+            valA = String(a.testCaseTitle || a.title || '');
+            valB = String(b.testCaseTitle || b.title || '');
+          } else if (sortField === 'status') {
+            valA = String(a.status || '');
+            valB = String(b.status || '');
+          } else if (sortField === 'assignee') {
+            valA = String(a.assignee || '');
+            valB = String(b.assignee || '');
+          } else {
+            valA = String(a[sortField] || '');
+            valB = String(b[sortField] || '');
+          }
+
+          const cmp = valA.localeCompare(valB, undefined, { numeric: true, sensitivity: 'base' });
+          return sortDirection === 'asc' ? cmp : -cmp;
+        });
+      }
+
+      function updateSortHeaders() {
+        document.querySelectorAll('th.sortable').forEach((th) => {
+          const f = th.dataset.sort;
+          const icon = th.querySelector('.sort-icon');
+          if (f === sortField) {
+            th.classList.add('active-sort');
+            if (icon) icon.textContent = sortDirection === 'asc' ? ' ▲' : ' ▼';
+          } else {
+            th.classList.remove('active-sort');
+            if (icon) icon.textContent = ' ⇅';
+          }
+        });
+
+        if ($('sortBy')) {
+          const expectedVal = `${sortField}-${sortDirection}`;
+          const opt = Array.from($('sortBy').options).find((o) => o.value === expectedVal);
+          if (opt) $('sortBy').value = expectedVal;
+        }
+      }
+
+      function renderCharts(active) {
+        const total = active.length || 1;
+
+        // Priority breakdown
+        const criticalCount = active.filter((d) => String(d.priority || d.risk || d.severity).toLowerCase().includes('crit')).length;
+        const highCount = active.filter((d) => String(d.priority || d.risk || d.severity).toLowerCase() === 'high').length;
+        const mediumCount = active.filter((d) => String(d.priority || d.risk || d.severity).toLowerCase() === 'medium').length;
+        const lowCount = active.filter((d) => String(d.priority || d.risk || d.severity).toLowerCase() === 'low').length;
+
+        const critPct = Math.round((criticalCount / total) * 100);
+        const highPct = Math.round((highCount / total) * 100);
+        const medPct = Math.round((mediumCount / total) * 100);
+        const lowPct = Math.round((lowCount / total) * 100);
+
+        $('priorityStackedBar').innerHTML =
+          (criticalCount ? `<div class="bar-segment bg-critical" style="width:${critPct}%" title="Critical: ${critPct}%"></div>` : '') +
+          (highCount ? `<div class="bar-segment bg-high" style="width:${highPct}%" title="High: ${highPct}%"></div>` : '') +
+          (mediumCount ? `<div class="bar-segment bg-medium" style="width:${medPct}%" title="Medium: ${medPct}%"></div>` : '') +
+          (lowCount ? `<div class="bar-segment bg-low" style="width:${lowPct}%" title="Low: ${lowPct}%"></div>` : '');
+
+        $('priorityMetrics').innerHTML = `
+          <div class="metric-pill"><span class="metric-dot bg-critical"></span>Critical: <span class="metric-val">${critPct}% (${criticalCount})</span></div>
+          <div class="metric-pill"><span class="metric-dot bg-high"></span>High: <span class="metric-val">${highPct}% (${highCount})</span></div>
+          <div class="metric-pill"><span class="metric-dot bg-medium"></span>Medium: <span class="metric-val">${medPct}% (${mediumCount})</span></div>
+          <div class="metric-pill"><span class="metric-dot bg-low"></span>Low: <span class="metric-val">${lowPct}% (${lowCount})</span></div>
+        `;
+
+        $('prioritySummaryBadge').textContent = `${critPct + highPct}% High Priority`;
+
+        // Status breakdown
+        const doneCount = active.filter((d) => String(d.status || '').toLowerCase() === 'done').length;
+        const workingCount = active.filter((d) => String(d.status || '').toLowerCase().includes('work')).length;
+        const pendingCount = active.length - doneCount - workingCount;
+
+        const donePct = Math.round((doneCount / total) * 100);
+        const workPct = Math.round((workingCount / total) * 100);
+        const pendPct = Math.round((pendingCount / total) * 100);
+
+        $('statusStackedBar').innerHTML =
+          (doneCount ? `<div class="bar-segment bg-done" style="width:${donePct}%" title="Done: ${donePct}%"></div>` : '') +
+          (workingCount ? `<div class="bar-segment bg-working" style="width:${workPct}%" title="Working on it: ${workPct}%"></div>` : '') +
+          (pendingCount ? `<div class="bar-segment bg-pending" style="width:${pendPct}%" title="Pending: ${pendPct}%"></div>` : '');
+
+        $('statusMetrics').innerHTML = `
+          <div class="metric-pill"><span class="metric-dot bg-done"></span>Done: <span class="metric-val">${donePct}% (${doneCount})</span></div>
+          <div class="metric-pill"><span class="metric-dot bg-working"></span>Working on it: <span class="metric-val">${workPct}% (${workingCount})</span></div>
+          <div class="metric-pill"><span class="metric-dot bg-pending"></span>Pending: <span class="metric-val">${pendPct}% (${pendingCount})</span></div>
+        `;
+
+        $('statusSummaryBadge').textContent = `${donePct}% Completed`;
+
+        // Summary Quality Metrics
+        const analyzed = active.filter((d) => d.analysis).length;
+        const missingEvidence = active.filter((d) => d.analysis?.missing?.length > 0).length;
+
+        $('statsSummary').innerHTML = `
+          <div class="mini-stat">
+            <span>Total Test Cases</span>
+            <b>${active.length}</b>
+          </div>
+          <div class="mini-stat">
+            <span>Analyzed Quality</span>
+            <b>${analyzed}/${active.length}</b>
+          </div>
+          <div class="mini-stat">
+            <span>Critical / High</span>
+            <b>${criticalCount + highCount}</b>
+          </div>
+          <div class="mini-stat">
+            <span>Missing Evidence</span>
+            <b style="color:${missingEvidence ? '#e2445c' : '#00ca72'}">${missingEvidence}</b>
+          </div>
+        `;
+      }
+
+      function updateLastChecked() {
+        $('lastChecked').textContent = 'Checked ' + new Date().toLocaleTimeString();
+      }
+
+      function filterItems(active) {
+        const q = ($('search')?.value || '').trim().toLowerCase();
+        const selPriority = ($('severity')?.value || '').trim().toLowerCase();
+        const selStatus = ($('statusFilter')?.value || '').trim().toLowerCase();
+
+        return active.filter((d) => {
+          const itemPriority = String(d.priority || d.risk || d.severity || 'Medium').trim().toLowerCase();
+          const itemStatus = String(d.status || '').trim().toLowerCase();
+
+          const matchPriority = !selPriority || itemPriority === selPriority;
+          let matchStatus = true;
+          if (selStatus === 'working on it') {
+            matchStatus = itemStatus.includes('work');
+          } else if (selStatus === 'done') {
+            matchStatus = itemStatus === 'done';
+          } else if (selStatus === 'open') {
+            matchStatus = !itemStatus || itemStatus === 'open';
+          }
+
+          const matchQuery = [
+            d.testCase || '',
+            d.scenarioId || '',
+            d.defectId || '',
+            d.testCaseTitle || d.title || '',
+            d.priority || d.risk || '',
+            d.preconditions || '',
+            d.steps || '',
+            d.expected || '',
+            d.assignee || '',
+            d.status || ''
+          ]
+            .join(' ')
+            .toLowerCase()
+            .includes(q);
+
+          return matchPriority && matchStatus && matchQuery;
+        });
+      }
+
+      function render() {
+        const active = state.defects.filter((d) => !d.removedFromBoard && d.source !== 'sample');
+        const c = state.connection;
+        const s = state.sync;
+
+        $('connection').classList.toggle('error', !!s.lastError);
+        $('connection').textContent = c.configured
+          ? 'monday.com Board Connected · Polling every ' +
+            c.intervalSeconds +
+            's · Last sync: ' +
+            (s.lastSuccess ? new Date(s.lastSuccess).toLocaleTimeString() : 'waiting') +
+            (s.lastError ? ' · Error: ' + s.lastError : '')
+          : 'Live workspace mode. Connected to monday.com board.';
+
+        renderCharts(active);
+        updateLastChecked();
+
+        const shown = sortItems(filterItems(active));
+        updateSortHeaders();
+
+        $('rows').innerHTML =
+          shown
+            .map((d) => {
+              const tcId = esc(d.testCase || d.title || ('TC-' + String(d.id).replace(/\D/g, '').slice(-3).padStart(3, '0')));
+              const scId = esc(d.scenarioId || (d.defectId ? 'SC-' + String(d.id).replace(/\D/g, '').slice(-3).padStart(3, '0') : '—'));
+              const defectTitle = esc(d.defectId || d.scenarioTitle || d.title || '—');
+              const tcTitle = esc(d.testCaseTitle || d.title || '—');
+              const priority = (d.priority || d.risk || d.severity || 'Medium');
+              const priorityLower = priority.toLowerCase();
+              const preconditions = esc(d.preconditions || '—');
+              const steps = esc(d.steps || '—');
+              const expected = esc(d.expected || '—');
+              const assignee = d.assignee || '';
+              const status = d.status || '';
+              const date = esc(d.date || '—');
+              const updated = esc(d.sourceUpdatedAt ? new Date(d.sourceUpdatedAt).toLocaleString() : '—');
+
+              // Priority badge
+              let priorityClass = 'badge-medium';
+              let priorityText = priority;
+              if (priorityLower.includes('crit')) {
+                priorityClass = 'badge-critical';
+                priorityText = 'Critical ⚠️';
+              } else if (priorityLower === 'high') {
+                priorityClass = 'badge-high';
+              } else if (priorityLower === 'low') {
+                priorityClass = 'badge-low';
+              }
+
+              // Status badge
+              let statusClass = 'status-empty';
+              let statusText = status || 'Open';
+              if (status.toLowerCase().includes('work')) {
+                statusClass = 'status-working';
+                statusText = 'Working on it';
+              } else if (status.toLowerCase() === 'done') {
+                statusClass = 'status-done';
+                statusText = 'Done';
+              }
+
+              // Person Avatar
+              let personHtml = '<span style="color:#a0aec0;">—</span>';
+              if (assignee) {
+                const initial = assignee.charAt(0).toUpperCase();
+                personHtml = `<div class="avatar-badge"><span class="avatar-circle">${initial}</span><span>${esc(assignee.split('@')[0])}</span></div>`;
+              }
+
+              return (
+                '<tr>' +
+                '<td><span class="code-pill">' + tcId + '</span></td>' +
+                '<td><span class="code-pill">' + scId + '</span></td>' +
+                '<td><strong>' + defectTitle + '</strong></td>' +
+                '<td><div class="desc-text" title="' + tcTitle + '">' + tcTitle + '</div></td>' +
+                '<td><span class="badge-priority ' + priorityClass + '">' + priorityText + '</span></td>' +
+                '<td><div class="desc-text" title="' + preconditions + '">' + preconditions + '</div></td>' +
+                '<td><div class="desc-text" title="' + steps + '">' + steps + '</div></td>' +
+                '<td><div class="desc-text" title="' + expected + '">' + expected + '</div></td>' +
+                '<td>' + personHtml + '</td>' +
+                '<td><span class="badge-status ' + statusClass + '">' + statusText + '</span></td>' +
+                '<td style="white-space:nowrap;color:#718096;">' + date + '</td>' +
+                '<td style="white-space:nowrap;color:#718096;">' + updated + '</td>' +
+                '<td><button data-id="' + esc(d.id) + '">' + (d.analysis ? 'Review' : 'Analyze') + '</button></td>' +
+                '</tr>'
+              );
+            })
+            .join('') || '<tr><td colspan="12" class="empty">No matching test cases or defects found.</td></tr>';
+
+        $('rows').querySelectorAll('button').forEach((b) => (b.onclick = () => run(b.dataset.id)));
+      }
+
+      async function run(id) {
+        try {
+          await api('/api/analyze', { id });
+          await refresh();
+          selected = state.defects.find((d) => d.id === id);
+          if (!selected) return;
+          const a = selected.analysis;
+          $('details').innerHTML =
+            '<span class="code-pill">' +
+            esc(selected.testCase || selected.id) +
+            '</span> ' +
+            (selected.scenarioId ? '<span class="code-pill">' + esc(selected.scenarioId) + '</span>' : '') +
+            '<h2>' +
+            esc(selected.testCaseTitle || selected.defectId || selected.title) +
+            '</h2>' +
+            '<p style="margin:8px 0 14px;color:#4a5568;">' +
+            esc(selected.description || selected.defectId || 'No extra description.') +
+            '</p><pre>' +
+            esc(
+              'Evidence Completeness: ' +
+                a.completeness +
+                '%\nMissing: ' +
+                (a.missing.join(', ') || 'None') +
+                '\nSuggested Severity: ' +
+                a.suggestedSeverity +
+                '\nReason: ' +
+                a.severityReason +
+                '\n\nPossible Duplicates:\n' +
+                (a.duplicates.map((d) => d.id + ' — ' + d.title + ' (' + d.similarity + '% title overlap)').join('\n') || 'None found') +
+                '\n\nObservations: ' +
+                ((a.observations || []).join(' ') || 'None') +
+                '\n\nRoot Cause: ' +
+                a.rootCause
+            ) +
+            '</pre><div class="notice">Automated findings require human review. Publishing adds an item update to monday.com.</div>';
+          $('publishButton').hidden = !selected.mondayId;
+          $('detailDialog').showModal();
+        } catch (e) {
+          notify(e.message);
+        }
+      }
+
+      $('syncButton').onclick = async () => {
+        const b = $('syncButton');
+        b.disabled = true;
+        try {
+          await api('/api/sync', {});
+          await refresh();
+          notify('Board synchronized with monday.com.');
+        } catch (e) {
+          notify(e.message);
+          await refresh();
+        } finally {
+          b.disabled = false;
+        }
+      };
+
+      $('analyzeAll').onclick = async () => {
+        try {
+          await api('/api/analyze', {});
+          await refresh();
+          notify('Analysis complete for all items.');
+        } catch (e) {
+          notify(e.message);
+        }
+      };
+
+      $('closeDetail').onclick = () => $('detailDialog').close();
+
+      $('publishButton').onclick = async () => {
+        if (!selected || !confirm('Add these findings as an update on this monday.com item?')) return;
+        const b = $('publishButton');
+        b.disabled = true;
+        try {
+          const j = await api('/api/publish', { id: selected.id });
+          notify(j.alreadyPublished ? 'These findings were already published.' : 'Findings published to monday.com.');
+        } catch (e) {
+          notify(e.message);
+        } finally {
+          b.disabled = false;
+        }
+      };
+
+      for (const id of ['search', 'severity', 'statusFilter', 'sortBy']) {
+        const el = $(id);
+        if (el) {
+          el.addEventListener('input', render);
+          el.addEventListener('change', render);
+        }
+      }
+
+      document.querySelectorAll('th.sortable').forEach((th) => {
+        th.onclick = () => {
+          const f = th.dataset.sort;
+          if (sortField === f) {
+            sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+          } else {
+            sortField = f;
+            sortDirection = (f === 'priority' || f === 'risk') ? 'desc' : 'asc';
+          }
+          render();
+        };
+      });
+
+      // ---- Excel (.xlsx) export: dependency-free writer (stored ZIP + SpreadsheetML) ----
+      const CRC_TABLE = Array.from({ length: 256 }, (_, n) => {
+        let c = n;
+        for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+        return c >>> 0;
+      });
+
+      function crc32(bytes) {
+        let c = 0xffffffff;
+        for (const b of bytes) c = CRC_TABLE[(c ^ b) & 0xff] ^ (c >>> 8);
+        return (c ^ 0xffffffff) >>> 0;
+      }
+
+      function zipStored(files) {
+        const enc = new TextEncoder();
+        const chunks = [];
+        const central = [];
+        let offset = 0;
+        const u16 = (v) => [v & 255, (v >>> 8) & 255];
+        const u32 = (v) => [v & 255, (v >>> 8) & 255, (v >>> 16) & 255, (v >>> 24) & 255];
+        for (const [name, text] of files) {
+          const nameBytes = enc.encode(name);
+          const data = enc.encode(text);
+          const crc = crc32(data);
+          const local = Uint8Array.from([
+            ...u32(0x04034b50), ...u16(20), ...u16(0x0800), ...u16(0), ...u16(0), ...u16(0x21),
+            ...u32(crc), ...u32(data.length), ...u32(data.length), ...u16(nameBytes.length), ...u16(0)
+          ]);
+          chunks.push(local, nameBytes, data);
+          central.push(
+            Uint8Array.from([
+              ...u32(0x02014b50), ...u16(20), ...u16(20), ...u16(0x0800), ...u16(0), ...u16(0), ...u16(0x21),
+              ...u32(crc), ...u32(data.length), ...u32(data.length), ...u16(nameBytes.length),
+              ...u16(0), ...u16(0), ...u16(0), ...u16(0), ...u32(0), ...u32(offset)
+            ]),
+            nameBytes
+          );
+          offset += local.length + nameBytes.length + data.length;
+        }
+        const centralSize = central.reduce((n, c) => n + c.length, 0);
+        const end = Uint8Array.from([
+          ...u32(0x06054b50), ...u16(0), ...u16(0), ...u16(files.length), ...u16(files.length),
+          ...u32(centralSize), ...u32(offset), ...u16(0)
+        ]);
+        return new Blob([...chunks, ...central, end], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        });
+      }
+
+      const xmlEsc = (s) =>
+        String(s ?? '')
+          .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '')
+          .replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+      const colName = (i) => String.fromCharCode(65 + i);
+
+      // Style ids: 0 default, 1 header, 2 red, 3 orange, 4 yellow, 5 green, 6 blue, 7 wrapped text
+      const FILL = { red: 2, orange: 3, yellow: 4, green: 5, blue: 6, wrap: 7 };
+
+      function buildXlsx(sheets) {
+        const head = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+        const cell = (c, r, ci, isHeader) => {
+          const v = c !== null && typeof c === 'object' ? c.v : c;
+          const s = isHeader ? 1 : c !== null && typeof c === 'object' ? c.s : FILL.wrap;
+          const ref = `${colName(ci)}${r}`;
+          return typeof v === 'number'
+            ? `<c r="${ref}" s="${s}"><v>${v}</v></c>`
+            : `<c r="${ref}" t="inlineStr" s="${s}"><is><t xml:space="preserve">${xmlEsc(v)}</t></is></c>`;
+        };
+        const sheetXml = (sh) => {
+          const body = [sh.header, ...sh.rows]
+            .map((row, r) => `<row r="${r + 1}">${row.map((c, ci) => cell(c, r + 1, ci, r === 0)).join('')}</row>`)
+            .join('');
+          const last = colName(sh.header.length - 1) + (sh.rows.length + 1);
+          return (
+            head +
+            '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
+            '<sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>' +
+            '<cols>' + sh.widths.map((w, i) => `<col min="${i + 1}" max="${i + 1}" width="${w}" customWidth="1"/>`).join('') + '</cols>' +
+            `<sheetData>${body}</sheetData><autoFilter ref="A1:${last}"/></worksheet>`
+          );
+        };
+        const rel = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships';
+        const xf = (fill, extra = '') =>
+          `<xf numFmtId="0" fontId="${fill === 1 ? 1 : 0}" fillId="${fill === 0 || fill === 7 ? 0 : fill === 1 ? 7 : fill}" borderId="0" xfId="0" applyFill="1" applyAlignment="1">` +
+          `<alignment vertical="top" wrapText="1"/></xf>`;
+        return zipStored([
+          ['[Content_Types].xml',
+            head + '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
+            '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>' +
+            '<Default Extension="xml" ContentType="application/xml"/>' +
+            '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>' +
+            sheets.map((_, i) => `<Override PartName="/xl/worksheets/sheet${i + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join('') +
+            '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>'],
+          ['_rels/.rels',
+            head + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+            `<Relationship Id="rId1" Type="${rel}/officeDocument" Target="xl/workbook.xml"/></Relationships>`],
+          ['xl/workbook.xml',
+            head + `<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="${rel}">` +
+            '<sheets>' + sheets.map((s, i) => `<sheet name="${xmlEsc(s.name)}" sheetId="${i + 1}" r:id="rId${i + 1}"/>`).join('') + '</sheets></workbook>'],
+          ['xl/_rels/workbook.xml.rels',
+            head + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+            sheets.map((_, i) => `<Relationship Id="rId${i + 1}" Type="${rel}/worksheet" Target="worksheets/sheet${i + 1}.xml"/>`).join('') +
+            `<Relationship Id="rId${sheets.length + 1}" Type="${rel}/styles" Target="styles.xml"/></Relationships>`],
+          ['xl/styles.xml',
+            head + '<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
+            '<fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts>' +
+            '<fills count="8"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill>' +
+            ['F8D7DA', 'FDE2C4', 'FFF3BF', 'D3F9D8', 'D0E8FF', 'E5E7EB']
+              .map((c) => `<fill><patternFill patternType="solid"><fgColor rgb="FF${c}"/><bgColor indexed="64"/></patternFill></fill>`)
+              .join('') +
+            '</fills>' +
+            '<borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders>' +
+            '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>' +
+            '<cellXfs count="8">' + [0, 1, 2, 3, 4, 5, 6, 7].map((n) => xf(n)).join('') + '</cellXfs></styleSheet>'],
+          ...sheets.map((s, i) => [`xl/worksheets/sheet${i + 1}.xml`, sheetXml(s)])
+        ]);
+      }
+
+      const FIELD_LABELS = {
+        title: 'Title', testCase: 'Test Case ID', scenarioId: 'Scenario ID', defectId: 'Defect ID / Title',
+        testCaseTitle: 'Test Case Title', description: 'Description', preconditions: 'Preconditions',
+        steps: 'Steps Summary', expected: 'Expected Result', actual: 'Actual Result', environment: 'Environment',
+        component: 'Component', severity: 'Priority', status: 'Status', assignee: 'Person', date: 'Date'
+      };
+
+      const fmtTime = (iso) => (iso ? new Date(iso).toLocaleString() : '');
+
+      const priorityStyle = (p) => {
+        const s = String(p).toLowerCase();
+        return s.includes('crit') ? FILL.red : s === 'high' ? FILL.orange : s === 'low' ? FILL.green : FILL.yellow;
+      };
+      const statusStyle = (s) => {
+        const v = String(s).toLowerCase();
+        return v === 'done' ? FILL.green : v.includes('work') ? FILL.blue : FILL.wrap;
+      };
+
+      $('exportButton').onclick = async () => {
+        const b = $('exportButton');
+        b.disabled = true;
+        try {
+          await refresh(true);
+          const active = sortItems(state.defects.filter((d) => !d.removedFromBoard && d.source !== 'sample'));
+          const pr = (d) => d.priority || d.risk || d.severity || 'Medium';
+          const count = (fn) => active.filter(fn).length;
+          const st = (d) => String(d.status || '').toLowerCase();
+
+          const cases = {
+            name: 'Test Cases',
+            header: [
+              'Test Case ID', 'Scenario ID', 'Defect ID / Title', 'Test Case Title', 'Priority', 'Preconditions',
+              'Steps Summary', 'Expected Result', 'Person', 'Status', 'Date', 'Last Updated'
+            ],
+            widths: [14, 14, 30, 36, 12, 32, 46, 36, 22, 16, 14, 20],
+            rows: active.map((d) => [
+              d.testCase || d.title || d.id,
+              d.scenarioId || '',
+              d.defectId || d.scenarioTitle || d.title || '',
+              d.testCaseTitle || d.title || '',
+              { v: pr(d), s: priorityStyle(pr(d)) },
+              d.preconditions || '',
+              d.steps || '',
+              d.expected || '',
+              d.assignee || '',
+              { v: d.status || 'Open', s: statusStyle(d.status || 'Open') },
+              d.date || '',
+              fmtTime(d.sourceUpdatedAt)
+            ])
+          };
+
+          const analysis = {
+            name: 'Analysis',
+            header: [
+              'Test Case ID', 'Completeness %', 'Missing Fields', 'Suggested Severity', 'Severity Reason',
+              'Possible Duplicates', 'Observations', 'Analyzed At'
+            ],
+            widths: [14, 15, 28, 18, 50, 50, 50, 20],
+            rows: active.map((d) => {
+              const a = d.analysis;
+              return [
+                d.testCase || d.title || d.id,
+                a ? a.completeness : '',
+                a ? a.missing.join(', ') || 'None' : 'Not analyzed',
+                a ? { v: a.suggestedSeverity, s: priorityStyle(a.suggestedSeverity) } : '',
+                a ? a.severityReason : '',
+                a ? a.duplicates.map((x) => `${x.id} ${x.title} (${x.similarity}%)`).join('; ') || 'None found' : '',
+                a ? (a.observations || []).join(' ') || 'None' : '',
+                a ? fmtTime(a.analyzedAt) : ''
+              ];
+            })
+          };
+
+          const summary = {
+            name: 'Summary',
+            header: ['Metric', 'Value'],
+            widths: [34, 18],
+            rows: [
+              ['Report generated', fmtTime(new Date().toISOString())],
+              ['Last monday.com sync', fmtTime(state.sync?.lastSuccess)],
+              ['Total test cases', active.length],
+              ['Priority: Critical', count((d) => String(pr(d)).toLowerCase().includes('crit'))],
+              ['Priority: High', count((d) => String(pr(d)).toLowerCase() === 'high')],
+              ['Priority: Medium', count((d) => String(pr(d)).toLowerCase() === 'medium')],
+              ['Priority: Low', count((d) => String(pr(d)).toLowerCase() === 'low')],
+              ['Status: Done', count((d) => st(d) === 'done')],
+              ['Status: Working on it', count((d) => st(d).includes('work'))],
+              ['Status: Open / other', count((d) => st(d) !== 'done' && !st(d).includes('work'))],
+              ['Analyzed', count((d) => d.analysis)],
+              ['With missing evidence', count((d) => d.analysis?.missing?.length)],
+              ['Without assignee', count((d) => !d.assignee)]
+            ]
+          };
+
+          const log = [...(state.changeLog || [])].reverse();
+          const updates = {
+            name: 'Updates',
+            header: ['Time', 'Test Case', 'Change', 'Field', 'Previous Value', 'New Value'],
+            widths: [20, 22, 12, 20, 40, 40],
+            rows: log.length
+              ? log.map((e) => [fmtTime(e.at), e.item, e.type, FIELD_LABELS[e.field] || e.field, e.from, e.to])
+              : [['', 'No changes recorded yet.', '', '', '', '']]
+          };
+
+          const url = URL.createObjectURL(buildXlsx([cases, analysis, summary, updates]));
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'defectlens-report.xlsx';
+          a.click();
+          URL.revokeObjectURL(url);
+        } catch (e) {
+          notify(e.message);
+        } finally {
+          b.disabled = false;
+        }
+      };
+
+      refresh();
+      setInterval(refresh, 10000);
+    </script>
+  </body>
+</html>
