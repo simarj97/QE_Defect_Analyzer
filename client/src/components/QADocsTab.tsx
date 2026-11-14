@@ -100,7 +100,7 @@ export const QADocsTab: React.FC<QADocsTabProps> = ({
 
         <div className="flex items-center gap-2">
           <button
-            onClick={onTriggerAI}
+            onClick={() => onTriggerAI()}
             disabled={isGeneratingAI}
             className="flex items-center gap-1.5 text-xs font-bold bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white px-3.5 py-2 rounded-lg shadow-sm transition-all disabled:opacity-50"
           >

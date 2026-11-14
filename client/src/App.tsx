@@ -109,7 +109,10 @@ export const App: React.FC = () => {
     if (!selectedProject) return;
     setIsGeneratingAI(true);
     try {
-      const res = await api.generateQADocs(selectedProject.id, payload);
+      const cleanPayload = payload && typeof payload === 'object' && !('nativeEvent' in payload) && !('preventDefault' in payload)
+        ? { rawContent: payload.rawContent, format: payload.format, title: payload.title }
+        : undefined;
+      const res = await api.generateQADocs(selectedProject.id, cleanPayload);
       await loadProjectData(selectedProject.id);
       setActiveTab('qa-docs');
       setSuccessToast(`Successfully generated ${res.generatedCount || 'all'} test cases across 7 QA documents!`);

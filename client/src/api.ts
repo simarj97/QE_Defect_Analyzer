@@ -112,10 +112,13 @@ export const api = {
 
   // AI QA Generation
   async generateQADocs(projectId: string, payload?: { rawContent?: string; format?: string; title?: string }): Promise<any> {
+    const cleanPayload = payload && typeof payload === 'object' && !('nativeEvent' in payload) && !('preventDefault' in payload)
+      ? { rawContent: payload.rawContent, format: payload.format, title: payload.title }
+      : {};
     const res = await fetch(`${API_BASE}/projects/${projectId}/ai/generate`, {
       method: 'POST',
       headers: getHeaders(),
-      body: JSON.stringify(payload || {})
+      body: JSON.stringify(cleanPayload)
     });
     if (!res.ok) {
       const err = await res.json();
